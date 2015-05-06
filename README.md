@@ -3,4 +3,4 @@ Time dependent DFT post processing scripts for Quantum Espresso &amp; ce-tddft o
 
 # Example Output
 
-![alt tag](https://raw.githubusercontent.com/twhughes/TD-DFT/master/Example-Result-CO2.png)
+![alt tag](https://raw.githubusercontent.com/twhughes/TD-DFT/master/Example_Output_CO2.png)
