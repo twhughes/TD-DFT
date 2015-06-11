@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# submits job to centurion and info in qjoblog 
+
+script="`pwd`.espresso"
+nnodes=$1
+ppn=$2
+input=$3
+output=$4 
+let nproc=$nnodes*$ppn
+
+rm -rf *.lammps.*
+# Header for script adds nodes list from PBS
+echo "#!/bin/bash" > $script
+echo "#PBS -V -l nodes=$nnodes:ppn=$ppn,walltime=720:00:00" >> $script #-V export environment variables in qsub to the batch job; -l accquiring resources;
+echo 'cd $PBS_O_WORKDIR' >> $script
+
+# Get start time and job id
+echo 'stime=`date +%s`' >> $script
+echo 'echo "PBS_JOBID: $PBS_JOBID" >$PBS_O_WORKDIR/qjoblog' >> $script #print jobid 
+
+# Get mpdhost and all working nodes
+echo 'NODES=`cat $PBS_NODEFILE | tr "\n" " "`' >> $script #define NODES
+echo "let flag=0" >> $script
+echo 'for node in $NODES' >> $script
+echo 'do' >> $script
+echo '  list=$list:$node' >> $script
+echo '  if [ 0 = $flag ]; then' >> $script
+echo '   echo "MPD host: $node" >> $PBS_O_WORKDIR/qjoblog' >> $script
+echo '  fi' >> $script
+echo '  let flag=1' >> $script
+echo 'done' >> $script
+echo 'echo "maplist: $list" >> $PBS_O_WORKDIR/qjoblog' >> $script
+
+
+# Start running the job with Openmpi
+echo "mpirun -bynode -np $nproc /home/twhughes/espresso/tddft-edit/bin/tddft.x  < $input >& `pwd`/$output" >> $script
+#echo "mpirun -bynode -np $nproc /home/sy0302/tmp/lammps/src/lmp_linux  < $input >& `pwd`/$output" >> $script
+
+# Add process info to qjoblog file.
+echo 'etime=`date +%s`' >> $script
+echo 'echo "start time: $stime" >>$PBS_O_WORKDIR/qjoblog' >> $script
+echo 'echo "end time: $etime" >>$PBS_O_WORKDIR/qjoblog' >> $script
+echo 'let ttime=$etime-$stime' >> $script
+echo 'let ttime2=$ttime/60' >> $script
+echo 'echo "walltime: $ttime seconds or $ttime2 minutes" >>$PBS_O_WORKDIR/qjoblog' >> $script
+
+
+echo "exit 0" >> $script
+
+# Submit script to queue
+/opt/torque/bin/qsub $script 
+rm -rf $script
+
