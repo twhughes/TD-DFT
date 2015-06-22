@@ -1,0 +1,47 @@
+&CONTROL
+                  calculation = 'scf' ,
+                       outdir ='./out' ,
+                 restart_mode = 'from_scratch' ,
+                   pseudo_dir ='~/espresso/pseudo',
+                etot_conv_thr = 1.0e-4 ,
+                forc_conv_thr = 1.0e-3 ,
+	              tefield = .TRUE,
+                     prefix='Graphene2',
+  /
+&SYSTEM
+                        ibrav = 4,
+                            a =2.46,
+                            c =10.0,
+                          nat = 4,
+                         ntyp = 1,
+                      ecutwfc = 30.D0 ,
+                      ecutrho = 240.0 ,
+			edir = 3,
+			emaxpos = 0.5,
+			eamp = 1.0,
+                  tot_charge = 0.00,
+                 occupations = 'smearing' ,
+                      degauss = 0.02 ,
+                                          smearing='mv',
+ 
+  /
+  &ELECTRONS
+                     conv_thr = 1.D-7 ,
+                      mixing_beta=0.3,
+                      mixing_mode='local-TF',
+                 electron_maxstep=300,
+  /
+  &IONS
+                 ion_dynamics = 'bfgs' ,
+ 
+  /
+ ATOMIC_SPECIES
+    C    12.00000   C.pz-rrkjus.UPF
+ ATOMIC_POSITIONS {crystal}
+ C  0.000000  0.000000  0.500000
+ C  0.333333  0.666667  0.500000
+ C  0.000000  0.000000  0.834000
+ C  0.666667  0.333333  0.834000
+ K_POINTS {automatic}
+ 1 1 1    0 0 0 
+ 10 10 1  0 0 0

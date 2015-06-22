@@ -32,7 +32,7 @@ auEfield = 5.14e11
 
 #spacing between bilayers (specified in PW calculation, change for your case)
 d = 5*auLength
-
+print d, ' spacing'
 #lists to store I-V values
 epoints = []   #electric field (bias)
 S = []         #straight time average list  (relevant)
